@@ -31,7 +31,7 @@ public class Usuarios {
 
     @NotNull(message = "No puede estar vacío el campo")
     @Column(nullable = false)
-    private String contraseña;
+    private String contrasena;
 
     @PastOrPresent(message = "La fecha no puede ser futura")
     private LocalDate fecha_registro;
@@ -48,12 +48,12 @@ public class Usuarios {
     public Usuarios() {
     }
 
-    public Usuarios(Long id_usuario, String nombre, String apellido, String correo, String contraseña, LocalDate fecha_registro) {
+    public Usuarios(Long id_usuario, String nombre, String apellido, String correo, String contrasena, LocalDate fecha_registro) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
-        this.contraseña = contraseña;
+        this.contrasena = contrasena;
         this.fecha_registro = fecha_registro;
     }
 
@@ -90,12 +90,12 @@ public class Usuarios {
         this.correo = correo;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasena() {
+        return contrasena;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     public LocalDate getFecha_registro() {

@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -53,25 +55,25 @@ public class UsuariosController {
 
     @PostMapping("/crear")
     public ResponseEntity<String> crearUsuario(@RequestBody Usuarios usuarios) {
-        // 1. Encripta la contraseña antes de guardar el usuario
-         usuarios.setContraseña(passwordEncoder.encode(usuarios.getContraseña()));
-        // 2. Guarda el usuario encriptado en la base de datos
+        System.out.println("Petición POST recibida en /growza/usuarios/crear");
+        System.out.println("Datos del usuario recibidos: " + usuarios.getCorreo());
+        // 1. Establece la fecha de registro automáticamente.
+        usuarios.setFecha_registro(LocalDate.now());
+        // 2. Delega la creación del usuario al servicio.
         usuariosService.crearUsuario(usuarios);
         return ResponseEntity.ok("Usuario creado con éxito");
-
     }
 
     @PostMapping("/loginConDTO")
-    public ResponseEntity<String> loginConDTO(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> loginConDTO(@RequestBody UserDto userDto) {
         UserDetails userDetails = usuariosService.loadUserByUsername(userDto.getCorreo());
-        if (userDetails != null && passwordEncoder.matches(userDto.getContraseña(), userDetails.getPassword())) {
-            String token = jwtUtil.generateToken(userDto.getCorreo()); // Usa el correo para generar el token
-            return ResponseEntity.ok(token);
+        if (userDetails != null && passwordEncoder.matches(userDto.getContrasena(), userDetails.getPassword())) {
+            String token = jwtUtil.generateToken(userDto.getCorreo());
+            return ResponseEntity.ok(Map.of("token", token));
         }
         return ResponseEntity.status(401).body("Credenciales inválidas");
     }
-
-
+    
 
     @PutMapping("/editar/{id}")
     public ResponseEntity<String> editarUsuario(@PathVariable Long id, @RequestBody Usuarios usuarioActualizado) {

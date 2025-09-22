@@ -1,5 +1,6 @@
 package com.growza_prueba.growzap.controller;
 
+import com.growza_prueba.growzap.dto.ProductoDTO;
 import com.growza_prueba.growzap.model.Productos;
 import com.growza_prueba.growzap.model.Usuarios;
 import com.growza_prueba.growzap.service.ProductosService;
@@ -48,6 +49,7 @@ public class ProductosCotroller {
         productosService.eliminarProducto(id);
         return ResponseEntity.ok("Producto eliminado con éxito");
     }
+
 
     //* Asignar una categoria a un producto
     @PutMapping("/{idProducto}/categoria/{idCategoria}")

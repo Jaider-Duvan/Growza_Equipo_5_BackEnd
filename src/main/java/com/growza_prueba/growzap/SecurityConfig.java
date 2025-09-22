@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -23,22 +24,21 @@ public class SecurityConfig {
     @Lazy
     private JwtRequestFilter jwtRequestFilter;
 
-    @Autowired
-    @Lazy
-    private com.growza_prueba.growzap.service.UsuariosService usuariosService;
-
-    // Código de tu clase SecurityConfig
+    // ... (other autowired fields)
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Estas rutas son públicas y no requieren token.
-                        .requestMatchers("/growza/usuarios/crear", "/growza/usuarios/loginConDTO").permitAll()
-                        // Estas rutas están protegidas y solo requieren que el usuario esté autenticado.
-                        .requestMatchers("/growza/usuarios", "/growza/usuarios/**").authenticated()
-                        // Si hay otras rutas, las configuras aquí.
+                        // ✅ These routes are now public
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/growza/usuarios/crear"),
+                                new AntPathRequestMatcher("/growza/usuarios/loginConDTO"),
+                                new AntPathRequestMatcher("/growza/productos/**"), // ⬅️ Product endpoints
+                                new AntPathRequestMatcher("/growza/categorias/**")  // ⬅️ Category endpoints
+                        ).permitAll()
+                        // 🔐 All other routes are protected
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -46,6 +46,8 @@ public class SecurityConfig {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
+    // ... (rest of the class remains the same)
 
     @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
