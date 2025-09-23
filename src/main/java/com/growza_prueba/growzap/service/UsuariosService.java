@@ -19,7 +19,9 @@ public class UsuariosService implements IUsuariosService {
 
     private final IUsuariosRepository usuariosRepository;
 
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     /*public Usuarios registerUsuario(Usuarios user) {
         if (user.getNombre() == null || user.getApellido() == null ||
