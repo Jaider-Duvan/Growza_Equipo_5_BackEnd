@@ -1,5 +1,6 @@
 package com.growza_prueba.growzap.service;
 
+import com.growza_prueba.growzap.model.Carrito;
 import com.growza_prueba.growzap.model.Usuarios;
 import com.growza_prueba.growzap.repository.IUsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,12 @@ import java.util.Optional;
 
 @Service
 public class UsuariosService implements IUsuariosService {
-    @Autowired
+
     private final IUsuariosRepository usuariosRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     /*public Usuarios registerUsuario(Usuarios user) {
         if (user.getNombre() == null || user.getApellido() == null ||
@@ -51,7 +54,7 @@ public class UsuariosService implements IUsuariosService {
 
 
 
-    @Autowired
+
     public UsuariosService(IUsuariosRepository usuariosRepository) {
         this.usuariosRepository = usuariosRepository;
     }
@@ -88,6 +91,8 @@ public class UsuariosService implements IUsuariosService {
             throw new RuntimeException("El correo ya está registrado.");
         }
         System.out.println("Guardando el usuario en la base de datos...");
+        Carrito carrito = new Carrito();
+        usuario.setCarrito(carrito);
         usuariosRepository.save(usuario);
         System.out.println("Usuario guardado exitosamente en la base de datos.");
     }

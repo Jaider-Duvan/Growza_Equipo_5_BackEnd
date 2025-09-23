@@ -1,36 +1,31 @@
 package com.growza_prueba.growzap.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
+@Table(name = "carrito")
 public class Carrito {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_carrito;
 
-    //! Relaciones
-    //* Un carrito pertenece a un unico usuario
+    // Relaciones
     @OneToOne
     @JoinColumn(name = "id_usuarios")
+    @JsonBackReference // Evita el bucle infinito al serializar
     private Usuarios usuarios;
 
-    @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Detalles_Carrito> detallesCarrito;
 
-
-    //* Constructores
+    // Constructores
     public Carrito() {
     }
 
-    public Carrito(Long id_carrito, Usuarios usuarios) {
-        this.id_carrito = id_carrito;
-    }
-
-    //* Getters and Setters
+    // Getters and Setters
     public Long getId_carrito() {
         return id_carrito;
     }
