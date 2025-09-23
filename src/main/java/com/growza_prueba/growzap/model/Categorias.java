@@ -1,5 +1,7 @@
 package com.growza_prueba.growzap.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -18,6 +20,7 @@ public class Categorias {
     //! Relaciones
     //* Una catregoria puede tener muchos productos
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Productos> productos;
 
     //* Constructores

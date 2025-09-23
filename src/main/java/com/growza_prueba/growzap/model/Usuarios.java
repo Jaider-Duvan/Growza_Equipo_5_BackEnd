@@ -39,10 +39,11 @@ public class Usuarios {
     //! Relaciones
     //* Un usuario tiene un carrito
     @OneToOne(mappedBy = "usuarios", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("usuario-carrito")
     private Carrito carrito;
 
     @OneToMany(mappedBy = "usuarios", cascade = CascadeType.ALL)
+    @JsonManagedReference("usuario-pedidos")
     private List<Pedidos> pedidos;
 
     //* Constructores de Usuarios

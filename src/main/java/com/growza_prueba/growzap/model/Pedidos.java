@@ -1,5 +1,7 @@
 package com.growza_prueba.growzap.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -29,6 +31,7 @@ public class Pedidos {
     //* Muchos pedidos pertenecen a un solo usuario
     @ManyToOne
     @JoinColumn(name = "id_usuarios")
+    @JsonBackReference("usuario-pedidos")
     private Usuarios usuarios;
 
     //* Un pedido tiene un único pago
@@ -41,6 +44,7 @@ public class Pedidos {
 
     //* Un pedido se compone de múltiples líneas de detalle
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @JsonManagedReference("pedido-detalle")
     private List<Detalles_Pedidos> detallesPedidos;
 
     //* Constructores

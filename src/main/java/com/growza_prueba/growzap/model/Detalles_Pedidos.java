@@ -1,5 +1,6 @@
 package com.growza_prueba.growzap.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -23,11 +24,13 @@ public class Detalles_Pedidos {
     //* Muchos detalles de pedidos pertenecen a un solo pedido
     @ManyToOne
     @JoinColumn(name = "id_pedido", nullable = false)
+    @JsonBackReference("pedido-detalle")
     private Pedidos pedido;
 
     //* Muchos detalles de pedidos se refieren a un solo producto
     @ManyToOne
     @JoinColumn(name = "id_producto")
+    @JsonBackReference("producto-detalle")
     private Productos producto;
 
     //* Constructores

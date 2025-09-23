@@ -22,6 +22,10 @@ public class CategoriaController {
         this.iCategoriaRepository = iCategoriaRepository;
     }
 
+    @GetMapping
+    public List<Categorias> listarCategorias() {
+        return iCategoriaRepository.findAll();
+    }
 
     @GetMapping("/{id}")
     public Object ListaCategoriasID(@PathVariable Long id) {

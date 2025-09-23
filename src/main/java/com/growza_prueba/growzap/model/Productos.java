@@ -1,5 +1,7 @@
 package com.growza_prueba.growzap.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -32,9 +34,11 @@ public class Productos {
     //* Muchos productos pertenecen a una sola categoría
     @ManyToOne
     @JoinColumn(name = "id_categoria")
+    @JsonBackReference
     private Categorias categoria;
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    @JsonManagedReference("producto-detalle")
     private List<Detalles_Pedidos> detallesPedidos;
 
     //* Constructores

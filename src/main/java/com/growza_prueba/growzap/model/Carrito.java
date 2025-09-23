@@ -15,7 +15,7 @@ public class Carrito {
     // Relaciones
     @OneToOne
     @JoinColumn(name = "id_usuarios")
-    @JsonBackReference // Evita el bucle infinito al serializar
+    @JsonBackReference("usuario-carrito")
     private Usuarios usuarios;
 
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true)
