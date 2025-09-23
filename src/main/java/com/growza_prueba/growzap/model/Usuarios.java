@@ -38,7 +38,8 @@ public class Usuarios {
 
     //! Relaciones
     //* Un usuario tiene un carrito
-    @OneToOne(mappedBy = "usuarios", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuarios", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Carrito carrito;
 
     @OneToMany(mappedBy = "usuarios", cascade = CascadeType.ALL)
@@ -46,6 +47,7 @@ public class Usuarios {
 
     //* Constructores de Usuarios
     public Usuarios() {
+        this.fecha_registro = LocalDate.now();
     }
 
     public Usuarios(Long id_usuario, String nombre, String apellido, String correo, String contrasena, LocalDate fecha_registro) {
@@ -106,4 +108,14 @@ public class Usuarios {
         this.fecha_registro = fecha_registro;
     }
 
+    public Carrito getCarrito() {
+        return carrito;
+    }
+
+    public void setCarrito(Carrito carrito) {
+        this.carrito = carrito;
+        if (carrito != null) {
+            carrito.setUsuarios(this); // Esto es crucial: establece el usuario en el carrito
+        }
+    }
 }
