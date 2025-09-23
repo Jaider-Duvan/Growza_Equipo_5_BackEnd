@@ -10,8 +10,8 @@ import java.util.Optional;
 public interface IProductosService {
     List<Productos> obtenerProductos();
     Optional<Productos> obtenerPorId (Long id);
-    void guardarProducto (Productos producto);
-    void editarProducto (Long id , Productos producto);
+//    void guardarProducto (Productos producto);
+//    void editarProducto (Long id , Productos producto);
     void eliminarProducto (Long id);
     void asignarCategoriaAProducto(Long id_producto, Long id_categoria);
 }

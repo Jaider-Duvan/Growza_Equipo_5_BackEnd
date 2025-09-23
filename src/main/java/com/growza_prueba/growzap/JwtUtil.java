@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 // Clases de Spring para inyección de valores y marcar la clase como componente.
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -58,5 +59,9 @@ public class JwtUtil {
     private Date extractExpiration(String token) {
         // Usa el método genérico para obtener la fecha de expiración.
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public boolean validateToken(String jwt, UserDetails userDetails) {
+        return false;
     }
 }

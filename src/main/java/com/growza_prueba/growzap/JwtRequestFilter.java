@@ -14,51 +14,64 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// @Component: Buena práctica para que Spring gestione esta clase como un Bean.
-// OncePerRequestFilter: Asegura que el filtro se ejecute una sola vez por cada solicitud.
-@Component
+@Component // Spring lo gestiona como bean
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private UsuariosService userService; // Inyecta el servicio de usuarios para cargar los detalles del usuario.
+    private UsuariosService userService;
 
     @Autowired
-    private JwtUtil jwtUtil; // Inyecta la utilidad para manejar la creación y validación de tokens.
+    private JwtUtil jwtUtil;
 
-    // El método principal del filtro que se ejecuta en cada solicitud HTTP.
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain chain) throws ServletException, IOException {
 
-        // Extrae el encabezado "Authorization" de la solicitud.
         final String authorizationHeader = request.getHeader("Authorization");
 
         String username = null;
         String jwt = null;
 
-        // Comprueba si el encabezado existe y si tiene el formato correcto ("Bearer ").
+        // 🔎 Depuración: imprime si llega el header
+        if (authorizationHeader == null) {
+            System.out.println("❌ No se encontró header Authorization en la request: " + request.getRequestURI());
+        } else {
+            System.out.println("📩 Header Authorization recibido: " + authorizationHeader);
+        }
+
+        // Valida si el header tiene formato Bearer
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            // Extrae el token, eliminando el prefijo "Bearer ".
             jwt = authorizationHeader.substring(7);
-            // Utiliza JwtUtil para extraer el nombre de usuario del token.
-            username = jwtUtil.extractCorreo(jwt);
+            try {
+                username = jwtUtil.extractCorreo(jwt); // tu método para extraer el correo
+                System.out.println("✅ Usuario extraído del JWT: " + username);
+            } catch (Exception e) {
+                System.out.println("⚠️ Error al extraer usuario del token: " + e.getMessage());
+            }
         }
 
-        // Si se extrajo un nombre de usuario y el contexto de seguridad actual no tiene autenticación...
+        // Si hay usuario y el contexto de seguridad está vacío
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            try {
+                UserDetails userDetails = userService.loadUserByUsername(username);
 
-            // Carga los detalles del usuario desde el servicio.
-            UserDetails userDetails = userService.loadUserByUsername(username);
+                if (jwtUtil.validateToken(jwt, userDetails)) { // valida que el token sea correcto
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            // Crea un token de autenticación para Spring Security.
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("🔐 Usuario autenticado en SecurityContext: " + username);
+                } else {
+                    System.out.println("❌ Token JWT inválido para el usuario: " + username);
+                }
 
-            // Establece el token de autenticación en el contexto de seguridad.
-            // Esto le dice a Spring que el usuario está autenticado para esta solicitud.
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            } catch (Exception e) {
+                System.out.println("⚠️ Error en validación del usuario/token: " + e.getMessage());
+            }
         }
 
-        // Permite que la solicitud continúe su camino a otros filtros o al controlador.
+        // Continua con el resto de filtros
         chain.doFilter(request, response);
     }
 }

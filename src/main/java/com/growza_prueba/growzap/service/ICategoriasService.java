@@ -11,7 +11,6 @@ public interface ICategoriasService {
 
     List<Categorias> obtenerCategorias();
     Optional<Categorias> obtenerPorId(Long id);
-
     void guardarCategorias (Categorias categorias);
     void editarCategoria (Long id, Categorias categorias);
     void eliminarCategoria (Long id);

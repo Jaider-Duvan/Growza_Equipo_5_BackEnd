@@ -25,6 +25,7 @@ public class Productos {
     @Column(nullable = false)
     private int stock;
 
+    @Column(name = "imagen_url", length = 5000)
     private String imagen_url;
 
     //! Relaciones
